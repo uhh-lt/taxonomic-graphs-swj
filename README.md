@@ -17,7 +17,7 @@ Each train or test set presented with ```.pickle``` format, for the ease of pyth
 - children: string representing hyponym
 - child_def: string representing definition for the hyponym
 
-The data is availible by this link to (Zenodo)[https://zenodo.org/records/15511071]
+The data is availible by this link to [Zenodo](https://zenodo.org/records/15511071)
 
 #### Pre-training with WordNet
 
