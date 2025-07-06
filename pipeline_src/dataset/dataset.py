@@ -31,7 +31,7 @@ class HypernymDataset(Dataset):
         semeval_format=False,
         gold_path=None,
         transforms={
-            "only_child_leaf": predict_child_with_parent_and_grandparent, 
+            "only_child_leaf": predict_child_with_parent_and_grandparent,  # заменить на предсказание ребенка
             "only_leafs_all": predict_child_from_parent,
             "only_leafs_divided": predict_children_with_parent_and_brothers,
             "leafs_and_no_leafs": predict_child_from_parent,
@@ -43,6 +43,7 @@ class HypernymDataset(Dataset):
         few_shot_text=''
     ):
         self.tokenizer = tokenizer
+        # self.transforms = transforms
         self.tokenizer_encode_args = tokenizer_encode_args
         if semeval_format:
             assert gold_path is not None
@@ -55,24 +56,35 @@ class HypernymDataset(Dataset):
                 ["term", "hypernym"]
             ]
         else:
-
+            # self.df = pd.read_csv(
+            #     data_path, header=None, sep="\t", names=["term", "hypernym"]
+            # )
 
             self.data = pd.read_pickle(data_path)
 
+        # self.df.index = list(range(len(self.df)))
 
         self.case2transform = transforms
         self.few_shot_text = few_shot_text
 
     def __getitem__(self, index):
+        # row = self.df.loc[index]
+        # term = row["term"]
+        # target = ", ".join(row["hypernym"].split("\t"))
         elem = self.data[index]
         case = elem["case"]
+
+        # if not "changed" in elem.keys():
+        #     for field in ["children", "parents", "grandparents", "brothers"]:
+        #         if field in elem.keys():
+        #             elem[field] = HypernymDataset.delete_techniqal(elem[field])
+        #             elem["changed"] = True
 
         processed_term, target = self.case2transform[case](elem)
 
         system_prompt = """<s>[INST] <<SYS>> You are a helpfull assistant. List all the possible words divided with a coma. Your answer should not include anything except the words divided by a coma<</SYS>>"""
         processed_term = system_prompt + self.few_shot_text + "\n" + processed_term + "[/INST]"
 
-        # токенизируем
         encoded_term = self.tokenizer.encode(
             processed_term, **self.tokenizer_encode_args
         )
@@ -87,7 +99,7 @@ class HypernymDataset(Dataset):
         return {
             "encoded_term": encoded_term.squeeze(),  
             "encoded_target": encoded_target.squeeze(0),  
-            "input_seq": input_seq.squeeze(), 
+            "input_seq": input_seq.squeeze(),
             "labels": labels.squeeze(), 
         }
 

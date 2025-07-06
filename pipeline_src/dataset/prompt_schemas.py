@@ -60,7 +60,14 @@ def predict_child_with_parent_and_grandparent(elem):
     """
 
     clean = clean_elem(elem, keys_to_remove_digits=["children"])
-
+    # transformed_term = (
+    #     ", ".join(clean["grandparents"])
+    #     + " are hyponyms for the word '"
+    #     + clean["parents"]
+    #     + "'. Predict hyponyms for the word '"
+    #     + clean["parents"]
+    #     + "'. Answer:"
+    # )
 
     if use_def_prompt:
         transformed_term = (

@@ -148,7 +148,10 @@ def main(config):
 if __name__ == "__main__":
     config = TaskConfig()
 
+    config.n_epochs = params_list["EPOCHS"][0]
     config.batch_size = params_list["BATCH_SIZE"][0]
+    config.lr = float(params_list["LR"][0])
+    config.min_lr = float(params_list["MIN_LR"][0])
 
     config.data_path = params_list["DATA_PATH"][0]
     config.gold_path = (
